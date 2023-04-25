@@ -27,3 +27,6 @@ export const addproduct=(data)=>{
 export const addcategory=(data)=>{
     return axios.post("http://localhost:8080/addcategory",data)
 }
+export const getdetailsofProduct=(id)=>{
+    return axios.get(`http://localhost:8080/productDetails/${id}`)
+}

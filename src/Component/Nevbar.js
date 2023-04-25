@@ -17,26 +17,30 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-// import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
-import Home from './Home';
-import { Link } from 'react-router-dom';
+// import Home from './Home';
+import { Link, Route, Routes } from 'react-router-dom';
 import { Button } from '@mui/material';
 import {AiFillHome} from 'react-icons/ai';
-import Product from './Product';
-// import{ Menu} from '@mui/material';
-import ListSubheader from '@mui/material/ListSubheader';
+// import Product from './Product';
 import Collapse from '@mui/material/Collapse';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import DraftsIcon from '@mui/icons-material/Drafts';
-// import SendIcon from '@mui/icons-material/Send';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import StarBorder from '@mui/icons-material/StarBorder';
 import {BsFillDatabaseFill} from 'react-icons/bs'
 import {BiMessageRoundedError} from 'react-icons/bi'
-import ProductCard from './ProductCard';
-import Category from './Category';
+// import Category from './Category';
+import { useNavigate } from 'react-router-dom'
+// import Signup from './Signup';
+// import Login from './Login';
+// import About from './About ';
+import Productdetils from './Productdetils';
+const LazyProductcard=React.lazy(()=>import('./ProductCard'))
+const LazyHome=React.lazy(()=>import('./Home'))
+const LazyProduct=React.lazy(()=>import('./Product'))
+const LazyAbout=React.lazy(()=>import('./About '))
+const LazyCategory=React.lazy(()=>import('./Category'))
+const LazySignup=React.lazy(()=>import('./Signup'))
+const LazyLogin=React.lazy(()=>import('./Login'))
+
 
 const drawerWidth = 240;
 
@@ -85,10 +89,12 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   justifyContent: 'flex-end',
 }));
 
+
 export default function Nevbar() {
+  const nevigate=useNavigate()
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const[menudata,setmenudata]=useState(" ");
+  // const[menudata,setmenudata]=useState(" ");
   const [listopen, setlistOpen] = useState(true);
 
   const handleClick = () => {
@@ -100,6 +106,9 @@ export default function Nevbar() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const getdata=(data)=>{
+    console.log(data)
+  }
   return (
     <Box sx={{ display: 'flex' }} style={{height:"30PX"}}>
       <CssBaseline />
@@ -118,12 +127,14 @@ export default function Nevbar() {
             E-Commerce
           </Typography>
          
-          <Link to="/signup">
-          <Button sx={{marginLeft:'auto'}} variant="contained">Signup </Button>
-          </Link>
+         <div  style={{ marginLeft: "auto" }}>
+          
+          <Button sx={{marginLeft:'auto'}} variant="contained" onClick={(e)=>{nevigate("/signup")}}>Signup </Button>
+     
           <Link to ="/Login">
           <Button sx={{marginLeft:"10px"}} variant="contained">Login</Button>
           </Link>
+          </div>
 
         </Toolbar>
       </AppBar>
@@ -141,13 +152,16 @@ export default function Nevbar() {
         open={open}
       >
         <DrawerHeader>
+           <img src='./resorces/20230419_152010_0000 (003).png' style={{height:"60px", width:"120px"}} /> 
           <IconButton onClick={handleDrawerClose}>
+         
             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
+      
         </DrawerHeader>
         <Divider />
         <List>
-          <ListItem  disablePadding sx={{ display: 'block' }} onClick={()=>setmenudata("Home")}>
+          <ListItem  disablePadding sx={{ display: 'block' }} onClick={()=>nevigate("/")}>
       <ListItemButton >
         <ListItemIcon>
          <AiFillHome/>
@@ -166,17 +180,17 @@ export default function Nevbar() {
       </ListItem>
       <Collapse in={listopen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>setmenudata("productCard")}>
+          <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>nevigate("/productCard")}>
           <ListItemButton sx={{ pl: 4 ,marginLeft:"40px"}}>
             <ListItemText primary="ProductList" />
           </ListItemButton>
           </ListItem >
-          <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>setmenudata("Product")} >
+          <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>nevigate("/Product")} >
           <ListItemButton sx={{ pl: 4 ,marginLeft:"40px"}}>
         <ListItemText primary="Product" />
       </ListItemButton>
       </ListItem>
-      <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>setmenudata("Category")}>
+      <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>nevigate("/Category")}>
       <ListItemButton sx={{ pl: 4 ,marginLeft:"40px"}}>
         <ListItemText primary="Category" />
       </ListItemButton>
@@ -184,7 +198,7 @@ export default function Nevbar() {
         </List>
         
       </Collapse>
-      <ListItemButton>
+      <ListItemButton onClick={()=>nevigate("/About")}>
         <ListItemIcon>
          <BiMessageRoundedError/>
         </ListItemIcon>
@@ -195,17 +209,46 @@ export default function Nevbar() {
    
        
       </Drawer>
+     
+
       <Main open={open}>
         <DrawerHeader />
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-         {menudata=="Home" && <Home/>}
-         {menudata=="Product" && <Product/>} 
-         {menudata=="productCard" &&<ProductCard/>}
-         {menudata=="Category"&&<Category/>}
-       
+          <Routes>
+         <Route   path="/Home" element={<React.Suspense>
+          <LazyHome/>
+         </React.Suspense>}></Route>  
+          <Route path="/productDetails/:id" element={<Productdetils />}></Route> 
+        <Route path="/signup" element={<React.Suspense>
+          <LazySignup/>
+        </React.Suspense>}></Route>
+        <Route path="/Login" element={<React.Suspense>
+          <LazyLogin/>
+        </React.Suspense>}></Route>
+          <Route path="/" element={<React.Suspense>
+            <LazyHome/>
+            </React.Suspense>}></Route>  
+        <Route path="/product" element={<React.Suspense>
+          <LazyProduct/></React.Suspense>}></Route>
+        <Route path="/productcard" element={
+        <React.Suspense fallback="loding..">
+          <LazyProductcard />
+          </React.Suspense>}></Route>
+        <Route path="/Category" element={<React.Suspense>
+          <LazyCategory/>
+        </React.Suspense>}>
+        </Route>
+        <Route path="/About" element={<React.Suspense>
+         <LazyAbout/>
+        </React.Suspense>}>
+        </Route>
+         {/* <Route  path ="/*" element={<Error/>}></Route> */}
+     </Routes>
+        {/* {childern} */}
       </Box>
         
       </Main>
+      
     
     </Box>
   );

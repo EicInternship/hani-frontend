@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { addUser } from '../Service/Service';
 import { Box, TextField, Button, Typography } from '@mui/material';
 // import { Link } from 'react-router-dom';
-
-const Signup = () => {
+import { useNavigate } from 'react-router-dom';
+const Signup = () =>
+ {
+  const[loading,setloading]=useState(false)
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -12,6 +14,7 @@ const Signup = () => {
     password: '',
   });
 
+  const nevigate=useNavigate()
   const [errors, setErrors] = useState({});
 
   const handleInputChange = (event) => {
@@ -68,16 +71,22 @@ const Signup = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
+    setloading(true)
     if (validateForm()) {
       addUser(formData).then((res) => {
-        console.log(res);
+        console.log(res.data);
         console.log('success log');
-      });
+        setloading(false)
+        nevigate("/Login")
+
+      }) .catch((error)=>{
+         console.log(error.data);
+         alert("user is present")
+      })
     }
   };
 
-  const handleReset = (event) => {
+  const handleReset = (e) => {
     setFormData({
       firstName: '',
       lastName: '',
@@ -87,7 +96,7 @@ const Signup = () => {
     });
     setErrors({});
   };
-
+  
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -150,12 +159,12 @@ const Signup = () => {
           {errors.password && <span>{errors.password}</span>}
           <div className='flex' style={{display:"flex",gap:"10px"}}>
             <Button type={"reset"}
-              onClick={handleReset}
+              onClick={(e)=>handleReset(e)}
               variant='contained'
               sx={{ marginTop: 3, borderRadius: 3 }}>
               Reset
             </Button>
-            <Button type={"submit"}
+            <Button type="submit"
               variant='contained'
               sx={{ marginTop: 3, borderRadius: 3 }}>Sign up</Button>
           </div>

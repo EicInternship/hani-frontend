@@ -2,22 +2,25 @@ import React, { useState } from 'react'
 import { login } from '../Service/Service'
 import { Link } from 'react-router-dom'
 import { Box, TextField, Typography,Button } from '@mui/material'
-
+import { useNavigate } from 'react-router-dom'
 export default function Login() {
     const[loginDetails,setlogingdetails]=useState({
       email:"",
       password:""
     })
-   
+
    const  handleChange=(e,property)=>{
         setlogingdetails({...loginDetails,[property]:e.target.value})
    }
+   const nevigate=useNavigate()
    const handleSubmit=(e)=>{
     e.preventDefault();
     login(loginDetails).then((res)=>{
-      if(res.status==="succes"){
+      
         console.log("succesful login")
-      }
+        document.getElementById("p").innerHTML = "you are loggded in";
+        nevigate("/Home")
+      
      }).catch((error) => {
       if (error.response.status === 404) {
         document.getElementById("p").innerHTML = "User not found please sign in";
@@ -61,7 +64,7 @@ export default function Login() {
             placeholder='Password'
             margin="normal"
             onChange={(e)=>{handleChange(e,'password')}} />
-             <Button variant='contained' type={"submit"}
+             <Button variant='contained' type="submit"
               sx={{marginTop:3,borderRadius:3}}>Login</Button>
              Are you not a member?<Link to ="/signup">signup</Link>
             <p id="p"></p>
