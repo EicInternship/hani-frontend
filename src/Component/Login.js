@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { login } from '../Service/Service'
-import { Link } from 'react-router-dom'
+import { Link, json } from 'react-router-dom'
 import { Box, TextField, Typography,Button } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import Cookies from 'js-cookie';
 export default function Login() {
     const[loginDetails,setlogingdetails]=useState({
       email:"",
@@ -15,8 +16,9 @@ export default function Login() {
    const nevigate=useNavigate()
    const handleSubmit=(e)=>{
     e.preventDefault();
+
     login(loginDetails).then((res)=>{
-      
+      Cookies.set('jwtToken', res.data, { expires: 7 });
         console.log("succesful login")
         document.getElementById("p").innerHTML = "you are loggded in";
         nevigate("/Home")
