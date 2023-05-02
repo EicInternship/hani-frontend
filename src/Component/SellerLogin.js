@@ -1,41 +1,37 @@
 import React, { useState } from 'react'
-import { login } from '../Service/Service'
-import { Link, json } from 'react-router-dom'
 import { Box, TextField, Typography,Button } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-// import Cookies from 'js-cookie';
-export default function Login() {
+import { getloginseller } from '../Service/Service'
+import axios from 'axios'
+export default function SellerLogin() {
     const[loginDetails,setlogingdetails]=useState({
-      email:"",
-      password:""
-    })
-
-   const  handleChange=(e,property)=>{
+        email:"",
+        password:""
+      })
+      const nevigate=useNavigate()
+      const  handleChange=(e,property)=>{
         setlogingdetails({...loginDetails,[property]:e.target.value})
    }
-   const nevigate=useNavigate()
    const handleSubmit=(e)=>{
     e.preventDefault();
-
-    login(loginDetails).then((res)=>{
-      // Cookies.set('jwtToken', res.data, { expires: 7 });
-        localStorage.setItem('jwt', res.data);
-       alert(res.data);
+    axios.post(`http://localhost:9020/checkseller?email=${loginDetails.email}&password=${loginDetails.password}`).then((res)=>{
         console.log("succesful login")
         document.getElementById("p").innerHTML = "you are loggded in";
-        nevigate("/Home")
-      
-     }).catch((error) => {
-      if (error.response.status === 404) {
-        document.getElementById("p").innerHTML = "User not found please sign in";
-      } else {
-        document.getElementById("p").innerHTML = "An error occurred. Please try again.";
-      }
-     } ) 
+        nevigate("/product")
     }
+    ).catch((error) => {
+        console.log(error.res)
+        // if (error.response.status === 401) {
+        //   document.getElementById("p").innerHTML = "User not found please sign in";
+        // } else {
+          document.getElementById("p").innerHTML = "An error occurred. Please try again.";
+        
+       } ) 
+}
+
+     
   return (
     <div>
-      
         <form onSubmit={(e)=>handleSubmit(e)}>
           <Box display="flex"
            flexDirection={"column"}
@@ -53,7 +49,7 @@ export default function Login() {
                  }
               }}
               >
-            <Typography  variant="h5" padding={3} textalign="center">Login</Typography>
+            <Typography  variant="h5" padding={3} textalign="center">Login For Seller</Typography>
            
             <TextField 
             type={"email"}
@@ -70,7 +66,7 @@ export default function Login() {
             onChange={(e)=>{handleChange(e,'password')}} />
              <Button variant='contained' type="submit"
               sx={{marginTop:3,borderRadius:3}}>Login</Button>
-             Are you not a member?<Link to ="/signup">signup</Link>
+             {/* Are you not a member?<Link to ="/signup">signup</Link> */}
             <p id="p"></p>
             </Box>
         </form>

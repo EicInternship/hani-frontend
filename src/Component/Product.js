@@ -31,14 +31,6 @@ import axios from 'axios';
               console.log(res.data)  
         })
  }
-
-//  const printOptions=()=>{
-//    return <>
-//     {categories.map(category=>{
-//        <MenuItem value={category.category}>{category.category}</MenuItem>
-//     })}
-//    </>
-//  }
  const printOptions = () => {
   return categories.map((category) => (
     <MenuItem key={category.id} value={category.category}>
@@ -46,21 +38,6 @@ import axios from 'axios';
     </MenuItem>
   ));
 };
-//  const handleDropDownChange=(e)=>{
-//    const selectedCategory=e.target.value;
-   
-//   //  setproductdata(prevproductdata => ({
-//   //   ...prevproductdata,
-//   //   category:selectedCategory
-//   // })
-
-//   setproductdata({
-//     ...productdata,category:selectedCategory
-//   })
-  
-  
- 
- 
   return (
     <div>
       <form onSubmit={(e)=>handelSubmit(e)}>

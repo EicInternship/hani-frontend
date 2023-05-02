@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'    
+import React, { useContext, useEffect, useState } from 'react'    
 import { getproduct } from '../Service/Service'
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -11,6 +11,11 @@ import Nevbar from './Nevbar';
 import { styled, useTheme } from '@mui/material/styles';
 import {Link} from 'react-router-dom';
 import Productdetils from './Productdetils';
+import CartContext from '../contex/Cart/CartContex';
+
+
+
+
 const useStyles = makeStyles({
   card: {
     transition: 'transform .2s',
@@ -24,17 +29,14 @@ const useStyles = makeStyles({
 
 function ProductCard() {
     const [Product, setproduct] = useState([])
-    const[selectedproduct,setselectedproduct]=useState("")
+    // const { addToCart }= useContext(CartContext)
   
-    // const imageurl = `http://localhost:8080/${product}`
   
     useEffect(() => {
         getproduct().then((res) => {
             setproduct(res.data)
         })
     },[])
-   
-    // console.log(product);
 
   const classes = useStyles();
 
@@ -61,10 +63,12 @@ function ProductCard() {
             </div> */} 
              {/* <Box sx={{ display: 'flex'}} > */}
               {/* <Nevbar/> */}
+       
           
-             {/* <Box  component="main" sx={{ flexGrow: 1,p:3}}>  */}
             <Grid container spacing={5}>
-         
+            
+
+           
     {  Product.map((f) =>
     
     <Grid item xs={12} sm={6} md={4} lg={3} key={f.id}>
@@ -75,7 +79,7 @@ function ProductCard() {
         <CardMedia
           component="img"
           height="150"
-          image={`http://localhost:8080/${f.pimagename}`} alt="Card image"
+          image={`http://localhost:9020/image/${f.pimagename}`} alt="Card image"
       
         />
         <CardContent>
@@ -88,7 +92,10 @@ function ProductCard() {
           <Typography variant="h5">
           Rs.{f.price}
           </Typography>
-          <Button variant='contained'> Add to Cart</Button>
+        
+          <Button variant='contained'   > Add to Cart
+          </Button>
+         
         </CardContent>
       </CardActionArea>
     </Card>
@@ -97,8 +104,10 @@ function ProductCard() {
             </Grid>
 
     )}
-  
+ 
     </Grid>
+
+   {/* {cartItems ? <Addtocartpage cartItems={cartItems}/> :""}   */}
         </div>
     )
 }

@@ -12,6 +12,7 @@ const Signup = () =>
     email: '',
     phonenum: '',
     password: '',
+    country:''
   });
 
   const nevigate=useNavigate()
@@ -93,6 +94,7 @@ const Signup = () =>
       email: '',
       phonenum: '',
       password: '',
+      country:''
     });
     setErrors({});
   };
@@ -149,6 +151,13 @@ const Signup = () =>
             placeholder='Enter PhoneNo'
             margin="normal" />
           {errors.phonenum && <span>{errors.phonenum}</span>}
+          <TextField type={"text"}
+            name="country"
+            value={formData.country}
+            onChange={handleInputChange}
+            variant='outlined'
+            placeholder='Enter Country'
+            margin="normal" />
           <TextField type={"password"}
             name="password"
             value={formData.password}

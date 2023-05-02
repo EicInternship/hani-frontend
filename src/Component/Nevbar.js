@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState,useContext } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -17,22 +17,22 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-// import Home from './Home';
 import { Link, Route, Routes } from 'react-router-dom';
 import { Button } from '@mui/material';
 import {AiFillHome} from 'react-icons/ai';
-// import Product from './Product';
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import {BsFillDatabaseFill} from 'react-icons/bs'
-import {BiMessageRoundedError} from 'react-icons/bi'
-// import Category from './Category';
+import {BiMessageRoundedError} from 'react-icons/bi';
 import { useNavigate } from 'react-router-dom'
-// import Signup from './Signup';
-// import Login from './Login';
-// import About from './About ';
 import Productdetils from './Productdetils';
+import Badge, { BadgeProps } from '@mui/material/Badge';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import CartContext from '../contex/Cart/CartContex';
+import CartState from '../contex/Cart/CartState';
+import LoginSeller from './LoginSeller';
+import SellerLogin from './SellerLogin';
 const LazyProductcard=React.lazy(()=>import('./ProductCard'))
 const LazyHome=React.lazy(()=>import('./Home'))
 const LazyProduct=React.lazy(()=>import('./Product'))
@@ -40,6 +40,8 @@ const LazyAbout=React.lazy(()=>import('./About '))
 const LazyCategory=React.lazy(()=>import('./Category'))
 const LazySignup=React.lazy(()=>import('./Signup'))
 const LazyLogin=React.lazy(()=>import('./Login'))
+const LazyCart=React.lazy(()=>import('./Cart/Cart'))
+// const LazyLoginSeller=React.lazy(()=>import('./LoginSeller'))
 
 
 const drawerWidth = 240;
@@ -88,6 +90,15 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   ...theme.mixins.toolbar,
   justifyContent: 'flex-end',
 }));
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    right: -3,
+    top: 13,
+    border: `2px solid ${theme.palette.background.paper}`,
+    padding: '0 4px',
+  },
+}));
+
 
 
 export default function Nevbar() {
@@ -95,7 +106,9 @@ export default function Nevbar() {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   // const[menudata,setmenudata]=useState(" ");
+  // const { cartItems, showHideCart } =useContext(CartContext);
   const [listopen, setlistOpen] = useState(true);
+  const{totalItems}=useContext(CartContext)
 
   const handleClick = () => {
     setlistOpen(!listopen);
@@ -133,8 +146,15 @@ export default function Nevbar() {
      
           <Link to ="/Login">
           <Button sx={{marginLeft:"10px"}} variant="contained">Login</Button>
-          </Link>
+          </Link> 
+           <IconButton aria-label="cart" sx={{marginLeft:"10px"}} onClick={()=>{nevigate("/cart")}}>
+      <StyledBadge badgeContent={totalItems}  color="secondary">
+        <ShoppingCartIcon />
+      </StyledBadge>
+    </IconButton>
+
           </div>
+        
 
         </Toolbar>
       </AppBar>
@@ -185,9 +205,9 @@ export default function Nevbar() {
             <ListItemText primary="ProductList" />
           </ListItemButton>
           </ListItem >
-          <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>nevigate("/Product")} >
+          <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>nevigate("/LoginSeller")} >
           <ListItemButton sx={{ pl: 4 ,marginLeft:"40px"}}>
-        <ListItemText primary="Product" />
+        <ListItemText primary=" Add Product" />
       </ListItemButton>
       </ListItem>
       <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>nevigate("/Category")}>
@@ -232,7 +252,9 @@ export default function Nevbar() {
           <LazyProduct/></React.Suspense>}></Route>
         <Route path="/productcard" element={
         <React.Suspense fallback="loding..">
-          <LazyProductcard />
+      
+        <LazyProductcard />
+         
           </React.Suspense>}></Route>
         <Route path="/Category" element={<React.Suspense>
           <LazyCategory/>
@@ -240,9 +262,15 @@ export default function Nevbar() {
         </Route>
         <Route path="/About" element={<React.Suspense>
          <LazyAbout/>
-        </React.Suspense>}>
-        </Route>
+        </React.Suspense>}></Route>
+        <Route path="/cart" element={<React.Suspense>
+         <LazyCart/>
+        </React.Suspense>}></Route>
+        {/* <Route path="/loginseller" element={<React.Suspense>
+         <LazyLoginSeller/>
+        </React.Suspense>}></Route> */}
          {/* <Route  path ="/*" element={<Error/>}></Route> */}
+         <Route  path ="/LoginSeller" element={<SellerLogin/>}></Route>
      </Routes>
         {/* {childern} */}
       </Box>

@@ -15,7 +15,6 @@ import { useState,useEffect } from 'react';
          setproduct(res.data)
     });
 },[]);
-
   return (
     <>
       <div>
@@ -28,7 +27,7 @@ import { useState,useEffect } from 'react';
         <CardMedia
           component="img"
           
-          image={`http://localhost:8080/${f.pimagename}`} alt="Card image"
+          image={`http://localhost:9020/image/${f.pimagename}`} alt="Card image"
       
         />
         <CardContent>

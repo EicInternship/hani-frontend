@@ -4,12 +4,20 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from 'react-router-dom'
+import axios from 'axios';
+import CartState from './contex/Cart/CartState';
+// import Contex from './contex/Contex';
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+
+axios.defaults.baseURL = 'http://localhost:9020';
 root.render(
   
   <React.StrictMode>
     <BrowserRouter>
-    <App />
+    <CartState>
+     <App />
+     </CartState>
     </BrowserRouter>
   </React.StrictMode>
   
