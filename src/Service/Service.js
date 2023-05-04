@@ -36,7 +36,11 @@ export const addproduct=(data)=>{
 
 }
 export const addcategory=(data)=>{
-    return axios.post("http://localhost:9020/addcategory",data)
+    return axios.post("http://localhost:9020/addcategory",data,{
+        headers: {
+            Authorization: token
+         }
+    })
 }
 export const getdetailsofProduct=(id)=>{
     return axios.get(`http://localhost:9020/productDetails/${id}`,{

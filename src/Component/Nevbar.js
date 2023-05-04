@@ -31,8 +31,8 @@ import Badge, { BadgeProps } from '@mui/material/Badge';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import CartContext from '../contex/Cart/CartContex';
 import CartState from '../contex/Cart/CartState';
-import LoginSeller from './LoginSeller';
-import SellerLogin from './SellerLogin';
+import LoginfoSeller from './LoginfoSeller';
+import Bilingform from './Bilingform';
 const LazyProductcard=React.lazy(()=>import('./ProductCard'))
 const LazyHome=React.lazy(()=>import('./Home'))
 const LazyProduct=React.lazy(()=>import('./Product'))
@@ -41,7 +41,8 @@ const LazyCategory=React.lazy(()=>import('./Category'))
 const LazySignup=React.lazy(()=>import('./Signup'))
 const LazyLogin=React.lazy(()=>import('./Login'))
 const LazyCart=React.lazy(()=>import('./Cart/Cart'))
-// const LazyLoginSeller=React.lazy(()=>import('./LoginSeller'))
+ const LazySellerLogin=React.lazy(()=>import('./SellerLogin'))
+ const LazyLoginforSeller=React.lazy(()=>import('./LoginfoSeller'))
 
 
 const drawerWidth = 240;
@@ -205,14 +206,14 @@ export default function Nevbar() {
             <ListItemText primary="ProductList" />
           </ListItemButton>
           </ListItem >
-          <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>nevigate("/LoginSeller")} >
+          <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>nevigate("/SellerLogin")} >
           <ListItemButton sx={{ pl: 4 ,marginLeft:"40px"}}>
         <ListItemText primary=" Add Product" />
       </ListItemButton>
       </ListItem>
-      <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>nevigate("/Category")}>
+      <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>nevigate("./loginforSeller")}>
       <ListItemButton sx={{ pl: 4 ,marginLeft:"40px"}}>
-        <ListItemText primary="Category" />
+        <ListItemText primary="  Add Category" />
       </ListItemButton>
       </ListItem>
         </List>
@@ -266,12 +267,14 @@ export default function Nevbar() {
         <Route path="/cart" element={<React.Suspense>
          <LazyCart/>
         </React.Suspense>}></Route>
-        {/* <Route path="/loginseller" element={<React.Suspense>
-         <LazyLoginSeller/>
-        </React.Suspense>}></Route> */}
          {/* <Route  path ="/*" element={<Error/>}></Route> */}
-         <Route  path ="/LoginSeller" element={<SellerLogin/>}></Route>
+         <Route  path ="/SellerLogin" element={
+         <React.Suspense><LazySellerLogin/></React.Suspense>}></Route>
+         {/* <Route path="/bilingform" element={<Bilingform/>}></Route> */}
+         <Route  path ="/loginforSeller" element={
+         <React.Suspense><LazyLoginforSeller/></React.Suspense>}></Route>
      </Routes>
+         
         {/* {childern} */}
       </Box>
         
