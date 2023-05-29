@@ -1,20 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'    
-import { getproduct } from '../Service/Service'
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { CardActionArea,Box, Button } from '@mui/material';
+import { CardActionArea,Box, Button, Pagination } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { makeStyles } from '@mui/styles';
-import Nevbar from './Nevbar';
-import { styled, useTheme } from '@mui/material/styles';
-import {Link} from 'react-router-dom';
-import Productdetils from './Productdetils';
-import CartContext from '../contex/Cart/CartContex';
-
-
-
+import {Link, json} from 'react-router-dom';
+import { getproductbypagination } from '../Service/Service';
 
 const useStyles = makeStyles({
   card: {
@@ -22,53 +15,49 @@ const useStyles = makeStyles({
     '&:hover': {
       transform: 'scale(1.05)'
     }
-    },
+    },    
   });
-  
-  
-
 function ProductCard() {
-    const [Product, setproduct] = useState([])
-    // const { addToCart }= useContext(CartContext)
-  
-  
+    const [Product, setproduct] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    // useEffect(() => {
+    //     getproduct().then((res) => {
+    //         setproduct(res.data)
+    //         console.log(res.data)
+    //     })
+    // },[])
     useEffect(() => {
-        getproduct().then((res) => {
-            setproduct(res.data)
-        })
-    },[])
-
+      getAllProduct(currentPage);
+    }, [currentPage]);
+  
+    const getAllProduct=async (page)=>{
+      try {
+        const res = await getproductbypagination(page);
+        console.log(res.data.split("]")[0].replace(/'/g, '"')+"]");
+      
+        const pageNo = res.data.split("]")[1]
+        
+        const products = JSON.parse(res.data.split("]")[0].replace(/'/g, '"') +"]")
+        // console.log(product);
+        // console.log("second value",res.data.split("]")[1])
+        setproduct(products);
+        setTotalPages(pageNo);
+         
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    }; 
+    
+    const handlePageChange = (event, newpage) => {
+      setCurrentPage(newpage);
+    };
   const classes = useStyles();
 
     return (
-
-        <div>
-          
-            {/* <div className="row">
-
-                {Product.map((f) =>
-                    <div className="col-md-6">
-                        <div className="card list"  >
-                            <img class="card-img-top img-thumbnail" src={`http://localhost:8080/${f.pimagename}`} alt="Card image" />
-                            <div class="card-body">
-                                <h4 class="card-title">{f.pname}</h4>
-                                <p class="card-text">{f.description}</p>
-                                <h4>Rs.{f.price}</h4>
-                                {/* <button onClick={()=>addtocart(f)}><a href="#" class="btn btn-primary">Add to cart</a></button> */}
-                            {/* </div> */}
-                        {/* </div> */}
-                    {/* </div> */}
-                {/* )
-                }
-            </div> */} 
-             {/* <Box sx={{ display: 'flex'}} > */}
-              {/* <Nevbar/> */}
-       
-          
-            <Grid container spacing={5}>
+        <div> 
             
-
-           
+            <Grid container spacing={5}>
     {  Product.map((f) =>
     
     <Grid item xs={12} sm={6} md={4} lg={3} key={f.id}>
@@ -78,7 +67,7 @@ function ProductCard() {
       <CardActionArea>
         <CardMedia
           component="img"
-          height="150"
+          height="250"
           image={`http://localhost:9020/image/${f.pimagename}`} alt="Card image"
       
         />
@@ -104,7 +93,11 @@ function ProductCard() {
             </Grid>
 
     )}
- 
+    <br></br>
+    <br></br>
+      <Pagination  count={totalPages}
+        page={currentPage}
+        onChange={handlePageChange}/>
     </Grid>
 
    {/* {cartItems ? <Addtocartpage cartItems={cartItems}/> :""}   */}

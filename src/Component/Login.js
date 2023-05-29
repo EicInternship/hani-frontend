@@ -1,10 +1,14 @@
-import React, { useState } from 'react'
-import { login } from '../Service/Service'
+import React, { useContext, useEffect, useState } from 'react'
+import {  loginUSER } from '../Service/Service'
 import { Link, json } from 'react-router-dom'
 import { Box, TextField, Typography,Button } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-// import Cookies from 'js-cookie';
+import jwtDecode from 'jwt-decode'
+import { UserContext } from '../contex/Usercontext'
+
 export default function Login() {
+  const { handleLogin,isLoggedIn} = useContext(UserContext);
+  const nevigate = useNavigate();
     const[loginDetails,setlogingdetails]=useState({
       email:"",
       password:""
@@ -13,26 +17,37 @@ export default function Login() {
    const  handleChange=(e,property)=>{
         setlogingdetails({...loginDetails,[property]:e.target.value})
    }
-   const nevigate=useNavigate()
+ 
    const handleSubmit=(e)=>{
     e.preventDefault();
-
-    login(loginDetails).then((res)=>{
-      // Cookies.set('jwtToken', res.data, { expires: 7 });
-        localStorage.setItem('jwt', res.data);
-       alert(res.data);
-        console.log("succesful login")
-        document.getElementById("p").innerHTML = "you are loggded in";
-        nevigate("/Home")
-      
+    loginUSER(loginDetails).then((res)=>{
+    localStorage.setItem('jwt', res.data);
+      const token = localStorage.getItem('jwt');
+      const decodedToken = jwtDecode(token);
+      handleLogin();
+      if (token) {        
+        console.log(decodedToken.authorities)
+        localStorage.setItem('role', decodedToken.authorities)
+      }
+      if(decodedToken.authorities==="Admin"){
+          nevigate("/Desbord")
+          document.getElementById("p").innerHTML = "you are loggded in as admin";
+        }
+        else if (decodedToken.authorities==="Customer"){
+          nevigate("/Home")
+          document.getElementById("p").innerHTML = "you are loggded in as customer";
+        } 
      }).catch((error) => {
-      if (error.response.status === 404) {
+      if (error.response.status === 404) { 
         document.getElementById("p").innerHTML = "User not found please sign in";
       } else {
         document.getElementById("p").innerHTML = "An error occurred. Please try again.";
       }
      } ) 
-    }
+    } 
+    useEffect(() => {
+      console.log('isLoggedIn:', isLoggedIn);
+    }, [isLoggedIn]);
   return (
     <div>
       

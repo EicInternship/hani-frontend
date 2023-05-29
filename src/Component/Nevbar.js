@@ -17,7 +17,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { Link, Route, Routes } from 'react-router-dom';
+import { Link, Route, Routes , useNavigate} from 'react-router-dom';
 import { Button } from '@mui/material';
 import {AiFillHome} from 'react-icons/ai';
 import Collapse from '@mui/material/Collapse';
@@ -25,14 +25,22 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import {BsFillDatabaseFill} from 'react-icons/bs'
 import {BiMessageRoundedError} from 'react-icons/bi';
-import { useNavigate } from 'react-router-dom'
-import Productdetils from './Productdetils';
 import Badge, { BadgeProps } from '@mui/material/Badge';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import CartContext from '../contex/Cart/CartContex';
-import CartState from '../contex/Cart/CartState';
-import LoginSeller from './LoginSeller';
-import SellerLogin from './SellerLogin';
+import DashboardPage from './Desbord.js/DashboardPage';
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import ProtectedRoute from './ProtectedRoute';
+import { UserContext} from '../contex/Usercontext';
+const LazyOrder=React.lazy(()=>import('./Order'))
+const LazyAddressform=React.lazy(()=>import('./AddressForm'))
+const LazyLOGOUT=React.lazy(()=>import('./Logoutuser'))
+const Lazydeshbord=React.lazy(()=>import('./Desbord.js/DashboardPage'))
+const LasyuserList=React.lazy(()=>import('./Customer/UserList'))
+const Lasyupdatecustomer=React.lazy(()=>import('./Customer/UpdateCustomer'))
+const Lasyaddcustomer=React.lazy(()=>import('./Customer/AddCustomer'))
+const LasydeleteCustomer=React.lazy(()=>import('./Customer/DeleteCustomer'))
+const Lasycustomerdetail=React.lazy(()=>import('./Customer/CustomerDetail'))
 const LazyProductcard=React.lazy(()=>import('./ProductCard'))
 const LazyHome=React.lazy(()=>import('./Home'))
 const LazyProduct=React.lazy(()=>import('./Product'))
@@ -41,8 +49,10 @@ const LazyCategory=React.lazy(()=>import('./Category'))
 const LazySignup=React.lazy(()=>import('./Signup'))
 const LazyLogin=React.lazy(()=>import('./Login'))
 const LazyCart=React.lazy(()=>import('./Cart/Cart'))
-// const LazyLoginSeller=React.lazy(()=>import('./LoginSeller'))
-
+const LazySellerLogin=React.lazy(()=>import('./SellerLogin'))
+const LazyLoginforSeller=React.lazy(()=>import('./LoginfoSeller'))
+const LasyAllhome =React.lazy(()=>import('./Homepageforall'))
+const LazyproductDetails=React.lazy(()=>import('./Productdetils'))
 
 const drawerWidth = 240;
 
@@ -98,18 +108,16 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
     padding: '0 4px',
   },
 }));
-
-
-
 export default function Nevbar() {
+  const { isLoggedIn } = useContext(UserContext); 
   const nevigate=useNavigate()
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  // const[menudata,setmenudata]=useState(" ");
-  // const { cartItems, showHideCart } =useContext(CartContext);
   const [listopen, setlistOpen] = useState(true);
   const{totalItems}=useContext(CartContext)
-
+  const role = localStorage.getItem('role');
+  
+    
   const handleClick = () => {
     setlistOpen(!listopen);
   };
@@ -127,15 +135,17 @@ export default function Nevbar() {
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{ mr: 2, ...(open && { display: 'none' }) }}
-          >
-            <MenuIcon />
-          </IconButton>
+          { isLoggedIn && (
+             <IconButton
+             color="inherit"
+             aria-label="open drawer"
+             onClick={handleDrawerOpen}
+             edge="start"
+             sx={{ mr: 2, ...(open && { display: 'none' }) }}
+           >
+             <MenuIcon />
+           </IconButton>
+          )}
           <Typography variant="h6" noWrap component="div">
             E-Commerce
           </Typography>
@@ -147,15 +157,14 @@ export default function Nevbar() {
           <Link to ="/Login">
           <Button sx={{marginLeft:"10px"}} variant="contained">Login</Button>
           </Link> 
+          {role === 'Customer' && (
            <IconButton aria-label="cart" sx={{marginLeft:"10px"}} onClick={()=>{nevigate("/cart")}}>
       <StyledBadge badgeContent={totalItems}  color="secondary">
         <ShoppingCartIcon />
       </StyledBadge>
     </IconButton>
-
+          )}
           </div>
-        
-
         </Toolbar>
       </AppBar>
       <Drawer
@@ -173,23 +182,24 @@ export default function Nevbar() {
       >
         <DrawerHeader>
            <img src='./resorces/20230419_152010_0000 (003).png' style={{height:"60px", width:"120px"}} /> 
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton onClick={handleDrawerClose} >
          
             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
       
         </DrawerHeader>
-        <Divider />
-        <List>
-          <ListItem  disablePadding sx={{ display: 'block' }} onClick={()=>nevigate("/")}>
-      <ListItemButton >
-        <ListItemIcon>
-         <AiFillHome/>
-        </ListItemIcon>
-        <ListItemText primary="Home" />
-      </ListItemButton>
-      </ListItem>
-      <ListItem  disablePadding sx={{ display: 'block' }}>
+        <Divider />  
+        {role === 'Admin' && (
+          <List>
+          <ListItem  disablePadding sx={{ display: 'block' }} onClick={()=>nevigate("/Desbord")}>
+        <ListItemButton >
+          <ListItemIcon>
+           < DashboardIcon/>
+          </ListItemIcon>
+          <ListItemText primary="Dashboard " />
+        </ListItemButton>
+        </ListItem>
+        <ListItem  disablePadding sx={{ display: 'block' }}>
       <ListItemButton onClick={handleClick}>
         <ListItemIcon>
           <BsFillDatabaseFill/>
@@ -200,79 +210,214 @@ export default function Nevbar() {
       </ListItem>
       <Collapse in={listopen} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>nevigate("/productCard")}>
-          <ListItemButton sx={{ pl: 4 ,marginLeft:"40px"}}>
-            <ListItemText primary="ProductList" />
-          </ListItemButton>
-          </ListItem >
-          <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>nevigate("/LoginSeller")} >
+          <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>nevigate("/product")} >
           <ListItemButton sx={{ pl: 4 ,marginLeft:"40px"}}>
         <ListItemText primary=" Add Product" />
       </ListItemButton>
       </ListItem>
-      <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>nevigate("/Category")}>
+      <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>nevigate("/category")}>
       <ListItemButton sx={{ pl: 4 ,marginLeft:"40px"}}>
-        <ListItemText primary="Category" />
+        <ListItemText primary="  Add Category" />
       </ListItemButton>
       </ListItem>
-        </List>
-        
+        </List> 
       </Collapse>
-      <ListItemButton onClick={()=>nevigate("/About")}>
+      <ListItemButton onClick={()=>nevigate("/userList")}>
         <ListItemIcon>
          <BiMessageRoundedError/>
         </ListItemIcon>
-        <ListItemText primary="About" />
+        <ListItemText primary="User" />
       </ListItemButton>
         <Divider />
-    </List>
-   
-       
-      </Drawer>
-     
-
+        </List>
+        )}
+         {role === 'Customer' && (
+          <List>
+            <ListItem  disablePadding sx={{ display: 'block' }} onClick={()=>nevigate("/home")}>
+        <ListItemButton >
+          <ListItemIcon>
+           <AiFillHome/>
+          </ListItemIcon>
+          <ListItemText primary="Home" />
+        </ListItemButton>
+        </ListItem>
+        <ListItem  disablePadding sx={{ display: 'block' }}>
+        <ListItemButton onClick={handleClick}>
+          <ListItemIcon>
+            <BsFillDatabaseFill/>
+          </ListItemIcon>
+          <ListItemText primary="Catalog" />
+          {listopen? <ExpandLess /> : <ExpandMore />}
+        </ListItemButton>
+        </ListItem>
+        <Collapse in={listopen} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItem disablePadding sx={{ display: 'block' }} onClick={()=>nevigate("/ProductCard")}>
+            <ListItemButton sx={{ pl: 4 ,marginLeft:"40px"}}>
+              <ListItemText primary="ProductList" />
+            </ListItemButton>
+            </ListItem >
+          </List>        
+        </Collapse>
+        <ListItemButton onClick={()=>nevigate("/About")}>
+          <ListItemIcon>
+           <BiMessageRoundedError/>
+          </ListItemIcon>
+          <ListItemText primary="About" />
+        </ListItemButton>
+        <ListItemButton onClick={()=>nevigate("/logout")}>
+          <ListItemIcon>
+           <BiMessageRoundedError/>
+          </ListItemIcon>
+          <ListItemText primary="Logout" />
+        </ListItemButton>
+        </List>
+         )}
+         </Drawer>
       <Main open={open}>
         <DrawerHeader />
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           <Routes>
          <Route   path="/Home" element={<React.Suspense>
           <LazyHome/>
-         </React.Suspense>}></Route>  
-          <Route path="/productDetails/:id" element={<Productdetils />}></Route> 
-        <Route path="/signup" element={<React.Suspense>
+         </React.Suspense>}></Route> 
+         <Route path="/signup" element={<React.Suspense>
           <LazySignup/>
-        </React.Suspense>}></Route>
+        </React.Suspense>}></Route> 
         <Route path="/Login" element={<React.Suspense>
           <LazyLogin/>
         </React.Suspense>}></Route>
+          <Route path="/productDetails/:id" element={<ProtectedRoute
+            element={
+              <React.Suspense fallback="Loading...">
+                 <LazyproductDetails/>  
+              </React.Suspense>
+            }
+          />}></Route> 
           <Route path="/" element={<React.Suspense>
-            <LazyHome/>
+              <LasyAllhome/>
             </React.Suspense>}></Route>  
-        <Route path="/product" element={<React.Suspense>
-          <LazyProduct/></React.Suspense>}></Route>
-        <Route path="/productcard" element={
-        <React.Suspense fallback="loding..">
-      
-        <LazyProductcard />
-         
-          </React.Suspense>}></Route>
-        <Route path="/Category" element={<React.Suspense>
-          <LazyCategory/>
-        </React.Suspense>}>
+        <Route path="/product" element={<ProtectedRoute
+            element={
+              <React.Suspense fallback="Loading...">
+                <LazyProduct />
+              </React.Suspense>
+            }
+          />}></Route>
+          <Route
+        path="/ProductCard"
+        element={
+          <ProtectedRoute
+            element={
+              <React.Suspense fallback="Loading...">
+                <LazyProductcard />
+              </React.Suspense>
+            }
+          />
+        }
+      />
+        <Route path="/Category" element={<ProtectedRoute
+            element={
+              <React.Suspense fallback="Loading...">
+                <LazyCategory />
+              </React.Suspense>
+            }
+          />}>
         </Route>
-        <Route path="/About" element={<React.Suspense>
-         <LazyAbout/>
-        </React.Suspense>}></Route>
-        <Route path="/cart" element={<React.Suspense>
-         <LazyCart/>
-        </React.Suspense>}></Route>
-        {/* <Route path="/loginseller" element={<React.Suspense>
-         <LazyLoginSeller/>
-        </React.Suspense>}></Route> */}
-         {/* <Route  path ="/*" element={<Error/>}></Route> */}
-         <Route  path ="/LoginSeller" element={<SellerLogin/>}></Route>
+        <Route path="/About" element={<ProtectedRoute
+            element={
+              <React.Suspense fallback="Loading...">
+                <LazyAbout />
+              </React.Suspense>
+            }
+          />}></Route>
+        <Route path="/cart" element={<ProtectedRoute
+            element={
+              <React.Suspense fallback="Loading...">
+                <LazyCart />
+              </React.Suspense>
+            }
+          />}></Route>
+{/*          
+         <Route  path ="/SellerLogin" element={
+         <React.Suspense><LazySellerLogin/></React.Suspense>}></Route> */}
+         {/* <Route path="/bilingform" element={<Bilingform/>}></Route>
+         <Route  path ="/loginforSeller" element={
+         <React.Suspense><LazyLoginforSeller/></React.Suspense>}></Route> */}
+           <Route path="/userList" element={<ProtectedRoute
+            element={
+              <React.Suspense fallback="Loading...">
+                <LasyuserList/>
+              </React.Suspense>
+            }
+          />}> </Route>
+           <Route path="/Update" element={<ProtectedRoute
+            element={
+              <React.Suspense fallback="Loading...">
+               <Lasyupdatecustomer/>
+              </React.Suspense>
+            }
+          />}> </Route>
+           <Route path="/Add" element={<ProtectedRoute
+            element={
+              <React.Suspense fallback="Loading...">
+                <Lasyaddcustomer/>
+              </React.Suspense>
+            }
+          />
+           }> </Route>
+           <Route path="/Delete" element={<ProtectedRoute
+            element={
+              <React.Suspense fallback="Loading...">
+               <LasydeleteCustomer/>
+              </React.Suspense>
+            }
+          /> 
+           }> </Route>
+           <Route path="/Desbord" element={
+            <ProtectedRoute
+            element={
+              <React.Suspense fallback="Loading...">
+                <Lazydeshbord/>
+              </React.Suspense>
+            }
+          />
+           }> </Route>
+           <Route path="/CustomerDetail/:id" element={
+             <ProtectedRoute
+            element={
+              <React.Suspense fallback="Loading...">
+              <Lasycustomerdetail/>
+              </React.Suspense>
+            }
+          />
+           }> </Route>
+           <Route path="/logout" element={
+            <ProtectedRoute
+            element={
+              <React.Suspense fallback="Loading..."> 
+                <LazyLOGOUT/>
+              </React.Suspense>
+            }
+          />}> </Route>
+           <Route path="/address" element={
+            <ProtectedRoute
+            element={
+              <React.Suspense fallback="Loading..."> 
+                 <LazyAddressform/>
+              </React.Suspense>
+            }
+          />}> </Route>
+           <Route path="/order" element={
+            <ProtectedRoute
+            element={
+              <React.Suspense fallback="Loading..."> 
+                <LazyOrder/>
+              </React.Suspense>
+            }
+          />}> </Route>
+      
      </Routes>
-        {/* {childern} */}
       </Box>
         
       </Main>

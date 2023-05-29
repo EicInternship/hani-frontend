@@ -1,39 +1,36 @@
-import React, { useState } from 'react'
-
-import { useNavigate } from 'react-router-dom'
-import { getloginseller } from '../Service/Service'
-import axios from 'axios'
 import { Box, Button, TextField, Typography } from '@mui/material'
-export default function SellerLogin() {
-    const[loginDetails,setlogingdetails]=useState({
-        email:"",
-        password:""
-      })
-      const nevigate=useNavigate()
-      const  handleChange=(e,property)=>{
-        setlogingdetails({...loginDetails,[property]:e.target.value})
-   }
-   const handleSubmit=(e)=>{
-    e.preventDefault();
-    axios.post(`http://localhost:9020/checkseller?email=${loginDetails.email}&password=${loginDetails.password}`).then((res)=>{
-        console.log("succesful login")
-        document.getElementById("p").innerHTML = "you are loggded in";
-        nevigate("/product")
-    }
-    ).catch((error) => {
-        console.log(error.res)
-        // if (error.response.status === 401) {
-        //   document.getElementById("p").innerHTML = "User not found please sign in";
-        // } else {
-          document.getElementById("p").innerHTML = "you are not a seller. please register.";
-        
-       } ) 
-}
+import axios from 'axios'
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-     
+export default function LoginfoSeller() {
+  const[loginDetails,setlogingdetails]=useState({
+    email:"",
+    password:""
+  })
+  const nevigate=useNavigate()
+  const  handleChange=(e,property)=>{
+    setlogingdetails({...loginDetails,[property]:e.target.value})
+}
+const handleSubmit=(e)=>{
+e.preventDefault();
+axios.post(`http://localhost:9020/checkseller?email=${loginDetails.email}&password=${loginDetails.password}`).then((res)=>{
+    console.log("succesful login")
+    document.getElementById("p").innerHTML = "you are loggded in";
+    nevigate("/Category")
+}
+).catch((error) => {
+    console.log(error.res)
+    // if (error.response.status === 401) {
+    //   document.getElementById("p").innerHTML = "User not found please sign in";
+    // } else {
+      document.getElementById("p").innerHTML = "you are not a seller. please register.";
+    
+   } ) 
+}
   return (
     <div>
-        <form onSubmit={(e)=>handleSubmit(e)}>
+         <form onSubmit={(e)=>handleSubmit(e)}>
           <Box
           display="flex"
            flexDirection={"column"}
@@ -75,3 +72,4 @@ export default function SellerLogin() {
     </div>
   )
 }
+
