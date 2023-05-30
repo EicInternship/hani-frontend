@@ -1,69 +1,12 @@
-// import { useContext } from "react";
-// import CartContext from "../../contex/Cart/CartContex";
-// import "./Cart.css";
-// import CartItem from "./CartItem";
-// import { Grid } from "@mui/material";
-// const Cart = () => {
-//   const { showCart, cartItems, showHideCart } = useContext(CartContext);
-// //   let opts = { format: "%s%v", symbol: "€" };
-
-//   return (
-//     <>
-//       {showCart && (
-//         <div >
-//           <div style={{ textAlign: "right" }}>
-//             <i
-//             //   style={{ cursor: "pointer" }}
-//             //   className='fa fa-times-circle'
-//             //   aria-hidden='true'
-//               onClick={showHideCart}
-//             ></i>
-//           </div>
-       
-//             {cartItems.length === 0 ? (
-//               <h4>Cart is Empty</h4>
-//             ) : (
-//             //   <ul>
-//             //     {cartItems.map((item) => (
-//             //       <CartItem key={item._id} item={item} />
-//             //     ))}
-//             //   </ul>
-//                <Grid container spacing={5}>
-//                  {
-//                     cartItems.map((item) => (
-//                         <Grid item xs={12} sm={6} md={4} lg={3}> 
-//                   <CartItem key={item._id} item={item} />
-//                   </Grid>
-//                 ) )}
-//                </Grid>
-              
-//             )}
-// {/*          
-//           <div className='Cart__cartTotal'> */}
-//             <div>Cart Total</div>
-//             <div style={{ marginLeft: 5 }}>
-//               {(
-//                 cartItems.reduce((amount, item) => item.price + amount, 0)
-            
-//               )}
-//             </div>
-//           {/* </div> */}
-//      </div>
-//       )}
-//     </>
-//   );
-// };
-
-// export default Cart;
 import {  Grid ,Button} from '@mui/material'
 import React, { useContext } from 'react'
 import CartContext from '../../contex/Cart/CartContex'
 import CartItem from './CartItem'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import "./Cart.css";
- function Cart() {
+function Cart() {    
 const{cart,clearCart,totalprice, shipping_fee } =useContext(CartContext)
- 
+const nevigate=useNavigate()
 if (cart.length === 0) {
     return (
       <div className='emptycart'>
@@ -84,10 +27,13 @@ if (cart.length === 0) {
           <Link to="/productcard">
             <Button variant='contained'> continue Shopping </Button>
           </Link>
+          <Link to="/Home">
           <Button  variant='contained' onClick={clearCart}>
             clear cart
           </Button>
+          </Link>
         </div>
+        <br/><br/>
         <div className="order-total--amount">
           <div className="order-total--subdata">
             <div>
@@ -110,6 +56,10 @@ if (cart.length === 0) {
               </p>
             </div>
           </div>
+        </div>
+        <br/>
+        <div className='place-order-button'>
+        <Button variant='contained' onClick={() => nevigate('/address')}> Place order </Button>
         </div>
     </div>
   )

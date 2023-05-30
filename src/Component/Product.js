@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { addproduct } from '../Service/Service'
+import { addproduct, getcategory } from '../Service/Service'
 import { Box, TextField ,MenuItem,Select,InputLabel,Button,Typography} from '@mui/material'
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
  function Product() {
   const [categories,setCategories]=useState(false)
+  const nevigate=useNavigate()
   useEffect(()=>{
-    axios.get("http://localhost:8080/category").then(res=>{
+    getcategory().then(res=>{
       setCategories(res.data)
     })
  },[])
@@ -29,6 +31,7 @@ import axios from 'axios';
         e.preventDefault();
         addproduct(productdata).then((res)=>{
               console.log(res.data)  
+              nevigate("/productcard")
         })
  }
  const printOptions = () => {

@@ -16,7 +16,7 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
     <CartState>
-     <App />
+      <App />
      </CartState>
     </BrowserRouter>
   </React.StrictMode>

@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import { addcategory } from '../Service/Service';
 import { TextField ,Box,Button,Typography} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 function Category() {
     const[Categorydata,setcategorydata]=useState({
         category:'',
         categotydescription:''
     })
+    const nevigate=useNavigate()
     const [errors, setErrors] = useState({});
     const handelechange=(e)=>{
         setcategorydata({
@@ -29,6 +31,7 @@ function Category() {
             addcategory(Categorydata).then((res) => {
                 console.log(res.data);
                 console.log("successfully added");
+                nevigate("/product")
             });
         } else {
          

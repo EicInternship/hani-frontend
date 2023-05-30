@@ -23,7 +23,7 @@ useEffect(()=>{
    getdetailsofProduct(params.id).then((res)=>{
      setproductDetails(res.data)
      console.log(res.data)
-     console.log(productDetails.pname)
+     console.log(res.data.pname)
     })
 },[])
   return (

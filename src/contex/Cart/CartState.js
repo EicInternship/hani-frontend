@@ -1,60 +1,18 @@
-// import { useReducer } from "react";
-// import CartContext from "./CartContex";
-// import CartReducer from "./CartReducer";
-// import { SHOW_HIDE_CART,ADD_TO_CART,REMOVE_ITEM} from "../Type";
 
-// const CartState = ({ children }) => {
-//   const initalState = {
-//     showCart: false,
-//     cartItems: [],
-//   };
-
-//   const [state, dispatch] = useReducer(CartReducer, initalState);
-
-//   const addToCart = (item) => {
-//     dispatch({ type: ADD_TO_CART, payload: item });
-//   };
-
-//   const showHideCart = () => {
-//     dispatch({ type: SHOW_HIDE_CART });
-//   };
-
-//   const removeItem = (id) => {
-//     const updatedCartItems = state.cartItems.filter(item => item.id !== id);
-//     dispatch({ type: REMOVE_ITEM, payload: updatedCartItems });
-//     // dispatch({ type: REMOVE_ITEM, payload: id });
-//   };
-
-//   return (
-//     <CartContext.Provider
-//       value={{
-//         showCart: state.showCart,
-//         cartItems: state.cartItems,
-//         addToCart,
-//         showHideCart,
-//         removeItem,  
-//       }}
-//     >
-//       {children}
-//     </CartContext.Provider>
-//   );
-// };
-
-// export default CartState;
 import React, { useEffect, useReducer } from 'react'
 import CartContext from './CartContex';
 import CartReducer from './CartReducer';
  
-const getLocalCartData = () => {
-    let localCartData = localStorage.getItem("refershcart");
-    if (localCartData === []) {
-      return [];
-    } else {
-      return JSON.parse(localCartData);
-    }
-  };
+// const getLocalCartData = () => {
+//     let localCartData = localStorage.getItem("refershcart");
+//     if (localCartData === []) {
+//       return [];
+//     } else {
+//       return JSON.parse(localCartData);
+//     }
+//   };
 const initialState = {
-    cart:getLocalCartData(),
+    cart:[],
     totalprice: "",
     totalItems: "",
     quantity: 1,
@@ -98,4 +56,3 @@ useEffect(() => {
 }
 
 export default CartState
-//9512622164

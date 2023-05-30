@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { addUser } from '../Service/Service';
-import { Box, TextField, Button, Typography } from '@mui/material';
+import { Box, TextField, Button, Typography, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 // import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 const Signup = () =>
@@ -12,7 +12,8 @@ const Signup = () =>
     email: '',
     phonenum: '',
     password: '',
-    country:''
+    country:'',
+    role:''
   });
 
   const nevigate=useNavigate()
@@ -94,7 +95,8 @@ const Signup = () =>
       email: '',
       phonenum: '',
       password: '',
-      country:''
+      country:'',
+      role:''
     });
     setErrors({});
   };
@@ -166,6 +168,21 @@ const Signup = () =>
             placeholder='Enter Password'
             margin="normal" />
           {errors.password && <span>{errors.password}</span>}
+        
+              <InputLabel>User Type</InputLabel>
+              
+              <Select
+                label="User Type"
+                name="role"
+                value={formData.role}
+                onChange={handleInputChange}
+                sx={{ my: 0, height: "100%" }}
+                required
+              >
+                <MenuItem value="Customer">Customer</MenuItem>
+                <MenuItem value="Admin">Admin</MenuItem>
+              </Select>
+          
           <div className='flex' style={{display:"flex",gap:"10px"}}>
             <Button type={"reset"}
               onClick={(e)=>handleReset(e)}
